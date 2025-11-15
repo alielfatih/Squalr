@@ -1,0 +1,31 @@
+name: Build Rust Windows Workspace
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
+    - name: Build with custom profile
+      run: cargo build --workspace --profile release-with-debug
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: rust-windows-artifacts
+        path: target/release-with-debug/**/*.exe
